@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutraGro Mushroom Production Flow</title>
+<style>
+:root{
+  --ink:#f7f4ec;
+  --muted:#d8d0bd;
+  --panel:rgba(255,255,255,.13);
+  --panel-strong:rgba(255,255,255,.2);
+  --line:rgba(255,255,255,.28);
+  --shadow:0 24px 70px rgba(0,0,0,.36);
+  --green:#87d99a;
+  --amber:#e6b96e;
+  --blue:#82c8ff;
+  --rose:#ff998f;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--ink);
+  font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+  background:#151815;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-3;
+  background:
+    linear-gradient(130deg,rgba(9,14,10,.78),rgba(34,29,21,.62) 48%,rgba(10,22,18,.82)),
+    url("https://images.unsplash.com/photo-1519305124423-5ccccff55da9?auto=format&fit=crop&w=2200&q=80");
+  background-size:cover;
+  background-position:center;
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 18% 16%,rgba(255,255,255,.14),transparent 26%),
+    radial-gradient(circle at 78% 8%,rgba(135,217,154,.14),transparent 24%),
+    linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+}
+
+.page{
+  width:min(1180px,calc(100% - 32px));
+  margin:auto;
+}
+
+.hero{
+  min-height:72vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:72px 0 42px;
+}
+
+.brand{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  width:max-content;
+  padding:9px 14px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:rgba(255,255,255,.12);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.25);
+  backdrop-filter:blur(12px) saturate(145%);
+  color:var(--muted);
+  font-size:14px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.brand-mark{
+  width:14px;
+  height:14px;
+  border-radius:50% 50% 46% 46%;
+  background:linear-gradient(180deg,#f5efe1,#b48355);
+  box-shadow:0 8px 18px rgba(230,185,110,.35);
+}
+
+h1{
+  max-width:920px;
+  margin:26px 0 16px;
+  font-size:clamp(46px,8vw,104px);
+  line-height:.93;
+  font-weight:800;
+  letter-spacing:0;
+}
+
+.subtitle{
+  max-width:720px;
+  margin:0;
+  color:var(--muted);
+  font-size:clamp(17px,2vw,24px);
+  line-height:1.6;
+}
+
+.quick-stats{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+  margin-top:36px;
+  max-width:780px;
+}
+
+.stat{
+  min-height:104px;
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.08));
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.26),var(--shadow);
+  backdrop-filter:blur(10px) saturate(140%);
+}
+
+.stat b{
+  display:block;
+  font-size:28px;
+  line-height:1.1;
+}
+
+.stat span{
+  display:block;
+  margin-top:8px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.45;
+}
+
+.section-shell{
+  margin:0 0 18px;
+}
+
+.section-toggle,
+.faq-toggle{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  min-height:82px;
+  padding:22px 24px;
+  color:var(--ink);
+  text-align:left;
+  cursor:pointer;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:linear-gradient(145deg,rgba(255,255,255,.2),rgba(255,255,255,.1));
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.28),var(--shadow);
+  backdrop-filter:blur(12px) saturate(145%);
+}
+
+.section-toggle:hover,
+.faq-toggle:hover{
+  background:rgba(255,255,255,.2);
+}
+
+.section-title{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.section-title strong{
+  font-size:clamp(22px,3vw,34px);
+  font-weight:760;
+}
+
+.section-title span{
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5;
+}
+
+.chevron{
+  flex:0 0 auto;
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--line);
+  border-radius:50%;
+  background:rgba(255,255,255,.12);
+  transition:transform .28s ease;
+}
+
+.section-shell.open .chevron,
+.faq-item.open .chevron{
+  transform:rotate(180deg);
+}
+
+.panel{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .55s ease;
+}
+
+.panel-inner{
+  padding:18px 0 30px;
+}
+
+.timeline{
+  display:grid;
+  gap:16px;
+}
+
+.process-card{
+  position:relative;
+  padding:22px;
+  border:1px solid rgba(255,255,255,.2);
+  border-left:7px solid var(--accent);
+  border-radius:8px;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.08)),
+    rgba(24,28,22,.28);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.25),0 16px 34px rgba(0,0,0,.2);
+}
+
+.process-card h3{
+  margin:0 0 10px;
+  font-size:22px;
+  line-height:1.25;
+}
+
+.process-card p,
+.process-card li{
+  color:#eee7d8;
+  font-size:15px;
+  line-height:1.72;
+}
+
+.process-card p{
+  margin:8px 0 0;
+}
+
+.process-card ul{
+  margin:10px 0 0 20px;
+  padding:0;
+}
+
+.composting{--accent:var(--amber);}
+.growing{--accent:var(--green);}
+.packaging{--accent:var(--blue);}
+.dispatch{--accent:var(--rose);}
+
+.flow-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+  margin-top:14px;
+}
+
+.mini{
+  min-height:82px;
+  padding:14px;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:8px;
+  background:rgba(255,255,255,.1);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  text-align:center;
+  color:#fff8e9;
+}
+
+.mini small{
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+}
+
+.callout{
+  margin-top:14px;
+  padding:14px 16px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.13);
+  color:#fff8e9;
+  line-height:1.65;
+}
+
+.warning{
+  border-color:rgba(255,153,143,.45);
+  background:rgba(255,85,76,.17);
+}
+
+.faq{
+  padding:50px 0 70px;
+}
+
+.faq h2{
+  margin:0 0 20px;
+  font-size:clamp(32px,5vw,60px);
+  line-height:1;
+}
+
+.faq-list{
+  display:grid;
+  gap:12px;
+}
+
+.faq-item{
+  border-radius:8px;
+}
+
+.faq-toggle{
+  min-height:68px;
+  padding:18px 20px;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.19),rgba(255,255,255,.09)),
+    rgba(24,28,22,.26);
+  backdrop-filter:none;
+}
+
+.faq-toggle strong{
+  font-size:17px;
+  line-height:1.45;
+}
+
+.faq-answer{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .45s ease;
+}
+
+.faq-answer div{
+  margin-top:1px;
+  padding:18px 20px 22px;
+  border:1px solid rgba(255,255,255,.19);
+  border-top:0;
+  border-radius:0 0 8px 8px;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.07)),
+    rgba(24,28,22,.28);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.18);
+}
+
+.faq-answer p{
+  margin:0;
+  color:#eee7d8;
+  font-size:15px;
+  line-height:1.76;
+}
+
+.footer{
+  padding:26px 0 44px;
+  color:var(--muted);
+  text-align:center;
+  line-height:1.7;
+}
+
+@media (max-width:760px){
+  .page{
+    width:min(100% - 22px,1180px);
+  }
+
+  .hero{
+    min-height:68vh;
+    padding-top:42px;
+  }
+
+  .quick-stats{
+    grid-template-columns:1fr;
+  }
+
+  .section-toggle{
+    min-height:76px;
+    padding:18px;
+  }
+
+  .process-card{
+    padding:18px;
+  }
+
+  .chevron{
+    width:36px;
+    height:36px;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{
+    scroll-behavior:auto;
+  }
+
+  .panel,
+  .faq-answer,
+  .chevron{
+    transition:none;
+  }
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <section class="hero">
+    <div class="brand"><span class="brand-mark"></span> NutraGro Farms LLP</div>
+    <h1>Mushroom Production Flow</h1>
+    <p class="subtitle">A stage-wise view of composting, growing, packaging and dispatch, including control points, grading logic, punnets and the complete production cycle.</p>
+    <div class="quick-stats" aria-label="Production summary">
+      <div class="stat"><b>77-85</b><span>Approximate total process days</span></div>
+      <div class="stat"><b>22</b><span>Air-conditioned growing rooms</span></div>
+      <div class="stat"><b>10-11 kg</b><span>Earlier accepted compost bag weight bracket</span></div>
+    </div>
+  </section>
+
+  <section class="section-shell">
+    <button class="section-toggle" type="button" aria-expanded="false">
+      <span class="section-title">
+        <strong>Composting Department</strong>
+        <span>Raw material procurement to filled compost bags with spawn.</span>
+      </span>
+      <span class="chevron" aria-hidden="true">v</span>
+    </button>
+    <div class="panel">
+      <div class="panel-inner timeline">
+        <article class="process-card composting">
+          <h3>1. Raw Material Procurement</h3>
+          <p>Wheat straw, chicken manure, wheat bran, urea, SSP, ammonium sulphate, cotton seed cake, gypsum and other inputs are procured for compost preparation.</p>
+        </article>
+
+        <article class="process-card composting">
+          <h3>2. Pre-Wetting</h3>
+          <p>Wheat straw is thoroughly watered before mixing. This starts the biological activity required for composting.</p>
+        </article>
+
+        <article class="process-card composting">
+          <h3>3. Mixing and Loading</h3>
+          <p>The watered straw is mixed with chicken manure, urea, SSP, ammonium sulphate, wheat bran, cotton seed cake, gypsum and other additives. The prepared mix is then loaded into composting bunkers.</p>
+        </article>
+
+        <article class="process-card composting">
+          <h3>4. Bunker Composting</h3>
+          <div class="flow-grid">
+            <div class="mini">Turn 1<small>About 2 days</small></div>
+            <div class="mini">Turn 2<small>About 2 days</small></div>
+            <div class="mini">Turn 3<small>About 2 days</small></div>
+          </div>
+          <p>Compost is periodically shifted and turned from one bunker to another so heat, air, moisture and ingredients become more uniform.</p>
+        </article>
+
+        <article class="process-card composting">
+          <h3>5. Tunnel Processing</h3>
+          <p>Compost is transferred into tunnels for pasteurization and conditioning.</p>
+          <ul>
+            <li>Temperature is maintained around 60&deg;C-80&deg;C.</li>
+            <li>Humidity and water levels are controlled.</li>
+            <li>Unwanted organisms are reduced and the compost is stabilized for mushroom spawn.</li>
+          </ul>
+          <div class="callout warning"><strong>Critical control point:</strong> As informed by management, defective compost batches are generally identified at or after the tunnel stage.</div>
+        </article>
+
+        <article class="process-card composting">
+          <h3>6. Bag Filling and Spawn Mixing</h3>
+          <p>Finished compost is transferred to a filling machine where mushroom spawn is mixed with the compost. The compost is filled into bags of approximately 10 kg capacity.</p>
+        </article>
+
+        <article class="process-card composting">
+          <h3>7. Sample Weight Verification</h3>
+          <p>Only 3-4 bags are sample checked. Management assumes the remaining bags contain a similar quantity of compost.</p>
+          <div class="callout">Earlier accepted bag weight: <strong>10-11 kg</strong>.</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell">
+    <button class="section-toggle" type="button" aria-expanded="false">
+      <span class="section-title">
+        <strong>Growing Department</strong>
+        <span>Spawning to flushes, cutting, grading and room cleaning.</span>
+      </span>
+      <span class="chevron" aria-hidden="true">v</span>
+    </button>
+    <div class="panel">
+      <div class="panel-inner timeline">
+        <article class="process-card growing">
+          <h3>8. Transfer to Growing Rooms</h3>
+          <p>Compost bags are shifted from the Composting Department to the Growing Department.</p>
+          <p>There are 22 air-conditioned growing rooms. Rooms 1-13 are smaller rooms, while Rooms 14-22 are larger rooms.</p>
+          <p>Average bags per room are around 3,200, with approximate compost of 32,000 kg per room.</p>
+        </article>
+
+        <article class="process-card growing">
+          <h3>9. Spawning</h3>
+          <p>Filled compost bags are arranged on racks. Generally 4-5 bags are accommodated side-by-side depending on rack dimensions and bag thickness.</p>
+        </article>
+
+        <article class="process-card growing">
+          <h3>10. Bag Pressing</h3>
+          <p>Bags are manually pressed to ensure uniform height and compost level. This stage became more important because the process relies on sample-based weight verification.</p>
+          <div class="callout">As informed by the client, from April onward they began moving away from the weight standard and toward a height standard: maximum 9 inches after bag pressing and maximum 11 inches after casing.</div>
+        </article>
+
+        <article class="process-card growing">
+          <h3>11. Casing After About 10-12 Days</h3>
+          <p>Coco peat or coir pith is added over the compost. Watering and mixing are performed, and bag height/weight increases after casing.</p>
+        </article>
+
+        <article class="process-card growing">
+          <h3>12. Ruffling After About 6 Days</h3>
+          <p>The casing layer is lightly mixed and loosened, watered and then covered using white paper sheets. This supports uniform mycelium spread and prepares the surface for pin formation.</p>
+        </article>
+
+        <article class="process-card growing">
+          <h3>13. Covering</h3>
+          <p>The white paper sheets used during ruffling are removed. This exposes the prepared casing surface before the room enters the final cool-down stage.</p>
+        </article>
+
+        <article class="process-card growing">
+          <h3>14. Cool Down</h3>
+          <p>Room conditions are maintained for approximately 10-12 days. This is the final preparation stage before mushroom production begins.</p>
+        </article>
+
+        <article class="process-card growing">
+          <h3>15. Flush 1</h3>
+          <p>The first mushroom crop emerges and normally gives the highest production among all flushes.</p>
+          <div class="flow-grid">
+            <div class="mini">A Grade<small>Market trade customers</small></div>
+            <div class="mini">B Grade<small>Wholesale customers</small></div>
+            <div class="mini">C Grade<small>Rejected quantity</small></div>
+          </div>
+        </article>
+
+        <article class="process-card growing">
+          <h3>16. Flush 2</h3>
+          <p>The second crop develops approximately 10-12 days after Flush 1. Unharvested Flush 1 mushrooms may also be harvested together.</p>
+        </article>
+
+        <article class="process-card growing">
+          <h3>17. Flush 3</h3>
+          <p>The third crop develops approximately 10-12 days after Flush 2. Yield is generally lower than Flush 1 and Flush 2.</p>
+          <div class="callout">Management may occasionally skip Flush 3 to keep the crop cycle within 56-60 days from spawning to room cleaning.</div>
+        </article>
+
+        <article class="process-card growing">
+          <h3>18. Cutting and Grading</h3>
+          <p>Cutting starts immediately during Flush 1 while later flush activity continues in the background. Mushrooms are segregated into A, B and C grades during cutting.</p>
+          <p>If mushrooms begin showing B grade characteristics, they are cut immediately because delay may cause further quality loss and convert them into C grade rejection.</p>
+        </article>
+
+        <article class="process-card growing">
+          <h3>19. Room Emptying and Cleaning</h3>
+          <p>Spent compost and used bags are removed after the flushes are completed. The growing room is cleaned and prepared for the next batch.</p>
+          <div class="callout">Total process duration: <strong>77-85 days</strong>.</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell">
+    <button class="section-toggle" type="button" aria-expanded="false">
+      <span class="section-title">
+        <strong>Packaging Department</strong>
+        <span>Harvest transfer, punnets, pouch packing and packaging records.</span>
+      </span>
+      <span class="chevron" aria-hidden="true">v</span>
+    </button>
+    <div class="panel">
+      <div class="panel-inner timeline">
+        <article class="process-card packaging">
+          <h3>20. Harvest Transfer</h3>
+          <p>Harvested mushrooms are transferred to the Packaging Department. Before packaging, mushrooms may be placed in PET or HIPS punnets for safer movement from the growing area.</p>
+          <div class="callout warning">Batch traceability generally ends after entry into the Packaging Department.</div>
+        </article>
+
+        <article class="process-card packaging">
+          <h3>21. Packing Operations</h3>
+          <div class="flow-grid">
+            <div class="mini">Punnet Packing</div>
+            <div class="mini">Pouch Packing</div>
+            <div class="mini">Packaging Rejection</div>
+          </div>
+          <p>Additional rejections may occur due to yellowing, ageing or quality deterioration after the cutting stage.</p>
+        </article>
+
+        <article class="process-card packaging">
+          <h3>22. Packaging Records</h3>
+          <p>The Packaging Department maintains records for opening quantity, closing quantity, dispatch quantity, rejected quantity and B grade packing.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell">
+    <button class="section-toggle" type="button" aria-expanded="false">
+      <span class="section-title">
+        <strong>Dispatch</strong>
+        <span>Daily plans, customer categories and same-day movement.</span>
+      </span>
+      <span class="chevron" aria-hidden="true">v</span>
+    </button>
+    <div class="panel">
+      <div class="panel-inner timeline">
+        <article class="process-card dispatch">
+          <h3>23. Dispatch Planning</h3>
+          <p>The daily dispatch plan is received from Head Office. The Packaging Department packs and dispatches products on the same day wherever required.</p>
+        </article>
+
+        <article class="process-card dispatch">
+          <h3>24. Customer Categories</h3>
+          <div class="flow-grid">
+            <div class="mini">Market Trade<small>Swiggy Instamart, BigBasket, Flipkart, More Retail, Jubilant</small></div>
+            <div class="mini">Wholesale<small>Wholesalers, bulk buyers and distributors</small></div>
+          </div>
+          <div class="callout">Market trade generally requires same-day fresh production and A grade mushrooms. Wholesale customers may accept both A grade and B grade, and may also accept previous-day production.</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <div class="faq-list">
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>1. What are the primary ingredients for composting?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>Wheat straw and chicken manure are the primary ingredients for the compost mix. However, those two alone are not sufficient. Urea, SSP, cotton seed cake, ammonium sulphate, wheat bran and gypsum are also added to balance nutrition, structure, moisture and composting activity.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>2. What exactly happens in bunkers, and why are three turns needed?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>In bunkers, the mixed raw material starts heating and breaking down. Turning the compost three times helps mix the material evenly, release excess heat and gases, add oxygen and spread moisture. This makes the compost more uniform before it is sent to the tunnel.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>3. What happens in tunneling?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>In tunneling, the compost is pasteurized and conditioned under controlled temperature, humidity and airflow. Pasteurization reduces harmful organisms, while conditioning removes excess ammonia and makes the compost suitable for mushroom spawn growth.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>4. Why are some batches cancelled after tunneling, and what happens to cancelled compost?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>Some batches are cancelled after tunneling when the compost is found unfit due to quality, temperature, ammonia, moisture or biological issues. As informed by the client, part of the cancelled compost may be distributed in small quantities into compost bags of multiple other batches, while ensuring the good compost is not adversely affected. Some quantity may also be discarded. It should be noted that approximately Rs. 2,17,000 may already have been spent on a cancelled batch by this stage.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>5. Why is every compost bag not weight checked?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>As per the client, checking every bag is not practical because approximately 3,200 bags may be placed in one room. If every bag were weighed, it would help keep bags within the earlier 10-11 kg standard and reduce excess-weight bags in rooms. However, from April onward the client has started replacing the weight standard with a height standard. During bag pressing, bags are targeted at a maximum height of 9 inches, and after casing at a maximum height of 11 inches. Some height differences may still be visible because faulty racks or wider gaps beneath racks allow some bags to sit lower than others.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>6. Why is full room capacity sometimes not utilized?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>Full capacity may not be achieved because rack length and bag thickness are not always consistent. Some rack sections can hold only four bags side-by-side, while others can comfortably hold five. Some bags are also thicker than others. As per the client, planning rooms to their fullest capacity remains a continuous operational challenge.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>7. Why is coco peat added during casing?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>Coco peat is added as a casing layer because it holds moisture and creates a suitable surface for mushroom pin formation. It does not mainly act as food for the mushroom; it helps maintain humidity, supports uniform growth and protects the compost surface.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>8. What is ruffling and why is it done?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>Ruffling is the light mixing or loosening of the casing layer after mycelium has developed. It helps spread the mycelium more evenly, improves surface uniformity and supports more balanced mushroom formation across the bag surface.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>9. Why is a separate cool-down process needed?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>Although the room is controlled throughout the process, cool down is a specific final preparation stage. Conditions are adjusted to encourage pinning and prepare the crop for the first flush. It is the last stage before visible mushroom production begins.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>10. What does the term flush mean?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>Flushes are rounds of mushroom production from the same compost bag. Flush 1 gives the highest output, Flush 2 gives slightly lower output and Flush 3 gives much lower output, sometimes around 1-2% of total yield. Flush 1, Flush 2 and Flush 3 together form the total yield. A total yield of at least 25% indicates a good batch; lower yield indicates scope for improvement. Flush 3 may be skipped when management wants to keep the cycle within 56-60 days from spawning to room cleaning, because a longer cycle delays the next batch entering that room.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>11. How is cutting performed?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>Cutting starts immediately during Flush 1 while Flush 2 activity continues in the background. During cutting, workers segregate mushrooms into A, B and C grades. If mushrooms show B grade characteristics, they are cut quickly because delaying may reduce their quality further and make them C grade rejection.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>12. Can the compost be used again after the third flush?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>No. A compost bag can normally produce up to three flushes, and sometimes only two. After the flushes are complete, the used compost and bags are removed and dumped in the designated dumping area.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>13. Why are HIPS and PET punnets used in the Growing Department?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>Punnets are small plastic containers, generally around 200 gm capacity, used to hold mushrooms. Softer and more flexible punnets are called PET punnets, while harder and tougher ones are called HIPS punnets. They are used in the Growing Department because freshly cut mushrooms are soft and fragile. Moving them loose in crates can damage them, so mushrooms are placed in punnets for safer transfer to the Packaging Department. This is why punnet requisition slips may start with "G", indicating that the requisition comes from the Growing Department and not Packaging.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>14. What is the problem with punnets?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>The issue is that all mushrooms may be transferred from Growing to Packaging in punnets, but not all mushrooms are finally dispatched in punnets. Some are repacked into pouches. For example, if 100 punnets are used by Growing and transferred to Packaging, Packaging may unpack 30 of them for pouch packing. Those 30 empty punnets remain available, but both departments may still record 100 punnets as consumed for that day. The next day, Packaging may use those 30 empty punnets along with 70 new punnets, and again 100 punnets may be shown as consumed. This can lead to duplicate consumption reporting, because the same 30 punnets are effectively counted twice and cannot be separately identified once mixed with other similar punnets.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>15. Why does packaging rejection happen when rejection already happens during cutting?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>Some mushrooms are rejected during cutting, but not every quantity transferred to Packaging is dispatched on the same day. Some quantity remains as closing stock and becomes opening stock the next day. This older stock is a major source of packaging-stage rejection due to yellowing or quality deterioration.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>16. What are mushroom grades, and why are they needed?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>Mushroom grades help identify which quality should be sent to which customer type. A grade mushrooms are required for market trade customers, because they generally do not accept B grade. Wholesale customers may accept both A grade and B grade. The grade system was introduced to reduce returns by separating better and weaker quality mushrooms before dispatch planning.</p></div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-toggle" type="button" aria-expanded="false"><strong>17. How are orders accepted?</strong><span class="chevron" aria-hidden="true">v</span></button>
+        <div class="faq-answer"><div><p>Head Office receives sales orders through a WhatsApp group. The orders are entered into a Dispatch Plan file along with the applicable selling rate, selected from the currently active rate chart approved by management. This dispatch plan is then shared with the Packaging Department for packing and dispatch execution.</p></div></div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  NutraGro Farms LLP<br>
+  Mushroom Production Flow | Composting to Growing to Packaging to Dispatch
+</footer>
+
+<script>
+function setPanelHeight(panel, open){
+  panel.style.maxHeight = open ? panel.scrollHeight + "px" : "0px";
+}
+
+document.querySelectorAll(".section-shell").forEach(function(shell){
+  var button = shell.querySelector(".section-toggle");
+  var panel = shell.querySelector(".panel");
+
+  button.addEventListener("click", function(){
+    var isOpen = shell.classList.toggle("open");
+    button.setAttribute("aria-expanded", String(isOpen));
+    setPanelHeight(panel, isOpen);
+  });
+});
+
+document.querySelectorAll(".faq-item").forEach(function(item){
+  var button = item.querySelector(".faq-toggle");
+  var answer = item.querySelector(".faq-answer");
+
+  button.addEventListener("click", function(){
+    var isOpen = item.classList.toggle("open");
+    button.setAttribute("aria-expanded", String(isOpen));
+    setPanelHeight(answer, isOpen);
+  });
+});
+
+window.addEventListener("resize", function(){
+  document.querySelectorAll(".section-shell.open .panel, .faq-item.open .faq-answer").forEach(function(panel){
+    panel.style.maxHeight = panel.scrollHeight + "px";
+  });
+});
+</script>
+</body>
+</html>
